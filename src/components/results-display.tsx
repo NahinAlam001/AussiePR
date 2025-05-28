@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -41,6 +42,14 @@ export function ResultsDisplay({ pointsBreakdown, formData, isLoadingAi, setIsLo
   const [aiSuggestions, setAiSuggestions] = useState<string | null>(null);
   const [aiError, setAiError] = useState<string | null>(null);
 
+  const {
+    age,
+    englishProficiency,
+    education,
+    overseasWorkExperience,
+    australianWorkExperience
+  } = formData;
+
   useEffect(() => {
     if (pointsBreakdown.total > 0) { // Only fetch suggestions if there's some input
       const fetchSuggestions = async () => {
@@ -49,12 +58,10 @@ export function ResultsDisplay({ pointsBreakdown, formData, isLoadingAi, setIsLo
         setAiSuggestions(null);
         try {
           const aiInput: SuggestImprovementsInput = {
-            age: ageToYearsForAI(formData.age as AgeCategory),
-            englishProficiency: formData.englishProficiency as EnglishProficiencyCategory, // The AI flow takes string
-            education: formData.education as EducationCategory, // The AI flow takes string
-            // For simplicity, summing the representative years of work experience.
-            // The AI prompt is generic "workExperience years".
-            workExperience: workExperienceToYearsForAI(formData.overseasWorkExperience as WorkExperienceCategory) + workExperienceToYearsForAI(formData.australianWorkExperience as WorkExperienceCategory),
+            age: ageToYearsForAI(age as AgeCategory),
+            englishProficiency: englishProficiency as EnglishProficiencyCategory, 
+            education: education as EducationCategory, 
+            workExperience: workExperienceToYearsForAI(overseasWorkExperience as WorkExperienceCategory) + workExperienceToYearsForAI(australianWorkExperience as WorkExperienceCategory),
             currentPoints: pointsBreakdown.total,
           };
           const result: SuggestImprovementsOutput = await suggestImprovements(aiInput);
@@ -72,8 +79,15 @@ export function ResultsDisplay({ pointsBreakdown, formData, isLoadingAi, setIsLo
       setAiError(null);
       setIsLoadingAi(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pointsBreakdown.total, formData]); // formData deep comparison handled by react-hook-form trigger
+  }, [
+    pointsBreakdown.total, 
+    age,
+    englishProficiency,
+    education,
+    overseasWorkExperience,
+    australianWorkExperience,
+    setIsLoadingAi
+  ]);
 
   return (
     <div className="space-y-6">
@@ -174,3 +188,5 @@ export function ResultsDisplay({ pointsBreakdown, formData, isLoadingAi, setIsLo
     </div>
   );
 }
+
+    
