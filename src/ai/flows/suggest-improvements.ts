@@ -1,3 +1,4 @@
+
 // This is an AI-powered tool that provides personalized suggestions to users on how to improve their points score for Australian PR, recommending further studies or work experience.
 
 'use server';
@@ -21,7 +22,7 @@ const SuggestImprovementsInputSchema = z.object({
 export type SuggestImprovementsInput = z.infer<typeof SuggestImprovementsInputSchema>;
 
 const SuggestImprovementsOutputSchema = z.object({
-  suggestions: z.string().describe('Personalized suggestions to improve the points score.'),
+  suggestions: z.string().describe('Personalized suggestions to improve the points score, formatted as plain text with newlines separating distinct points.'),
 });
 export type SuggestImprovementsOutput = z.infer<typeof SuggestImprovementsOutputSchema>;
 
@@ -42,7 +43,9 @@ Applicant Information:
 - Work Experience: {{{workExperience}}} years
 - Current Points: {{{currentPoints}}}
 
-Consider suggesting further studies, specific work experience, or other relevant strategies. Be specific and actionable.`,
+Consider suggesting further studies, specific work experience, or other relevant strategies. Be specific and actionable.
+Format your suggestions as plain text. Each distinct suggestion or piece of advice should be on a new line.
+Do not use markdown characters like *, #, or - for lists. Use simple paragraph breaks (newlines) instead.`,
 });
 
 const suggestImprovementsFlow = ai.defineFlow(
@@ -56,3 +59,4 @@ const suggestImprovementsFlow = ai.defineFlow(
     return output!;
   }
 );
+
